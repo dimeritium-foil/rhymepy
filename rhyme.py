@@ -1,5 +1,8 @@
 #!/bin/env python3
 
+# this was made during the infamous 2020 quarantine
+# https://github.com/dimeritium-foil/rhymepy
+
 from string import punctuation
 from colored import bg, attr
 import argparse
