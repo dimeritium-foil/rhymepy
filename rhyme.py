@@ -22,7 +22,9 @@ def main():
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
-    parse_args(parser)
+    parser._positionals.title = "required arguments"
+
+    parse_arguments(parser)
     args = parser.parse_args()
 
     # read the input file
@@ -62,7 +64,7 @@ def main():
     for line in poem:
         print(*line, sep=' ')
 
-def parse_args(parser):
+def parse_arguments(parser):
 
     parser.add_argument("file", help="a txt file")
 
