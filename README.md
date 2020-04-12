@@ -5,7 +5,7 @@ A simple CLI program that highlights rhymes in a given text, using either the Da
 ```
 usage: rhymepy [-h] [-l N | -a] [-p | -d {0,1,2}] file
 
-positional arguments:
+required arguments:
   file                  a txt file
 
 optional arguments:
