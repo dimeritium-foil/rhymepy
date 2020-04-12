@@ -29,4 +29,5 @@ backends:
 * Remove dependency on the`colored` module.
 * Loading bar if using Datamuse as a backend.
 * Option to center output text.
+* If a word contains punctuation highlight only the word.
 * (?) Remove empty lines and add a spacer in-between each line match block.
