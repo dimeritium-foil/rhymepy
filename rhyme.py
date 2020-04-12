@@ -93,8 +93,13 @@ def exists(word):
 
     return {"state": False}
 
+
 # generate a dictionary where each key is a list of words that rhyme in the whole poem
 def generate_rhymes_struct(backend):
+
+    # temp
+    loading = 0
+    words_sum = sum(len(line) for line in poem)
 
     count = 0
     for test_line in poem:
@@ -112,6 +117,11 @@ def generate_rhymes_struct(backend):
                 continue
             else:
                 if backend == "datamuse":
+
+                    # temp
+                    loading += 1
+                    print(loading, "/", words_sum)
+
                     rhyming_words = datamuse_rhymes(test_word)
                 elif backend == "pronouncing":
                     rhyming_words = rhymes(test_word)
