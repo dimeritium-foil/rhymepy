@@ -25,6 +25,7 @@ backends:
 * [colored](https://pypi.org/project/colored/) (temporary)
 
 **TODO:**
+* Make an install script.
 * Add a configurable color palette.
 * Remove dependency on the`colored` module.
 * Loading bar if using Datamuse as a backend.
