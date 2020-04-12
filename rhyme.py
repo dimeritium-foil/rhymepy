@@ -185,9 +185,18 @@ def colorize_words(matching_words_list, line_start, line_end, color_index):
             for j in range(len(poem[i])):
 
                 if poem[i][j].strip(punctuation) in matching_words_list:
-                    poem[i][j] = bg(color_index) + poem[i][j] + attr(0)
+                    poem[i][j] = bg(colorize_index(color_index)) + poem[i][j] + attr(0)
         except:
             pass
+
+def colorize_index(index):
+
+    colors = [1, 2, 3, 4, 237, 5, 6, 17, 22, 49, 54, 87, 52, 131, 213, 242, 208, 200, 20, 94]
+
+    while index > len(colors):
+        index -= len(colors)
+
+    return colors[index]
 
 # fetch rhymes from the datamuse api
 def datamuse_rhymes(word):
