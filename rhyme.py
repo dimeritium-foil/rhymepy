@@ -71,10 +71,9 @@ def main():
     if backend == "datamuse":
         print("elapsed time:", elapsed_time)
 
+    term_width = int( popen("tput cols", "r").read() )
     print("")
     for i in range(len(poem)):
-
-        term_width = int( popen("tput cols", "r").read() )
 
         # using input_file for the spaces count bec the color codes interfere
         spaces = (term_width - len(input_file[i])) // 2
