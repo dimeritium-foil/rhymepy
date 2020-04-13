@@ -28,8 +28,8 @@ backends:
 * Make an install script.
 * ~~Add a color palette.~~
 * Add an option to match only last words in each line (rhyme scheme).
-* Remove dependency on the`colored` module.
+* Remove dependency on the `colored` module.
 * ~~Loading bar if using Datamuse as a backend.~~
-* Option to center output text.
+* ~~Center output text.~~
 * If a word contains punctuation highlight only the word.
 * (?) Remove empty lines and add a spacer in-between each line match block.
