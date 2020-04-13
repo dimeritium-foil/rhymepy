@@ -50,6 +50,9 @@ def main():
     # apply the chosen backend and default to pronouncing if it exists
     if pronouncing_exists and args.pronouncing:
         backend = "pronouncing"
+    elif not pronouncing_exists and args.pronouncing:
+        print("error: pronouncing isn't installed, you can install it by running 'pip install pronouncing'")
+        exit()
     elif args.datamuse is not None:
         backend = "datamuse"
         datamuse_option = args.datamuse
@@ -68,10 +71,16 @@ def main():
     if backend == "datamuse":
         print("elapsed time:", elapsed_time)
 
-    # print the poem after colorizing the matches
     print("")
-    for line in poem:
-        print(' '.join(line))
+    for i in range(len(poem)):
+
+        term_width = int( popen("tput cols", "r").read() )
+
+        # using input_file for the spaces count bec the color codes interfere
+        spaces = (term_width - len(input_file[i])) // 2
+        print(" " * spaces, end='')
+
+        print(' '.join(poem[i]))
 
 def parse_arguments(parser):
 
@@ -209,6 +218,7 @@ def colorize_words(matching_words_list, line_start, line_end, color_index):
         except:
             pass
 
+# return color number from the color palette, with cycling
 def colorize_index(index):
 
     colors = [1, 2, 3, 4, 237, 5, 6, 17, 22, 49, 54, 87, 52, 131, 213, 242, 208, 200, 20, 94]
@@ -245,7 +255,9 @@ def progress_bar(passed, total):
     fill_char = "#"
     empty_char = "-"
     end_chars = ("[", "]")
+
     message = "fetching rhymes..."
+    message_counter = str(passed) + " / " + str(total)
 
     # subtracting 2 from the width to account for the end chars
     term_width = int( popen("tput cols", "r").read() ) - 2
@@ -259,16 +271,15 @@ def progress_bar(passed, total):
     # overwrite the previously written 2 lines
     print("\033[F \033[F", end='')
 
+    # print the message
     print(message, end='')
-    for i in range(term_width - len(message) - len(str(passed)+" / "+str(total))):
-        print(" ", end='')
-    print(passed, "/", total)
+    print(" " * (term_width - len(message) - len(message_counter)), end='')
+    print(message_counter)
 
+    # print the progress bar
     print(end_chars[0], end='')
-    for i in range(fill):
-        print(fill_char, end='')
-    for i in range((term_width - fill)):
-        print(empty_char, end='')
-    print(end_chars[1]) #, end='\r')
+    print(fill_char * fill, end='')
+    print(empty_char * (term_width - fill), end='')
+    print(end_chars[1])
 
 main()
