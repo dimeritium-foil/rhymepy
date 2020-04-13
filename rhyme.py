@@ -62,8 +62,9 @@ def main():
     match_rhyming_words(lines_to_match)
 
     # print the poem after colorizing the matches
+    print("")
     for line in poem:
-        print(*line, sep=' ')
+        print(' '.join(line))
 
 def parse_arguments(parser):
 
@@ -107,6 +108,10 @@ def generate_rhymes_struct(backend):
     for test_line in poem:
         for test_word in test_line:
 
+            if backend == "datamuse":
+                loading += 1
+                progress_bar(loading, words_sum)
+
             # check if the current line is empty
             if test_line == []:
                 break
@@ -120,9 +125,6 @@ def generate_rhymes_struct(backend):
             else:
                 if backend == "datamuse":
                     rhyming_words = datamuse_rhymes(test_word)
-
-                    loading += 1
-                    progress_bar(loading, words_sum)
 
                 elif backend == "pronouncing":
                     rhyming_words = rhymes(test_word)
@@ -238,7 +240,8 @@ def progress_bar(passed, total):
     end_chars = ("[", "]")
     message = "fetching rhymes..."
 
-    term_width = int( popen("tput cols", "r").read() )
+    # subtracting 2 from the width to account for the end chars
+    term_width = int( popen("tput cols", "r").read() ) - 2
 
     fill = int( (passed/total)*term_width )
 
@@ -257,7 +260,7 @@ def progress_bar(passed, total):
     print(end_chars[0], end='')
     for i in range(fill):
         print(fill_char, end='')
-    for i in range((term_width - fill) - 2):
+    for i in range((term_width - fill)):
         print(empty_char, end='')
     print(end_chars[1]) #, end='\r')
 
