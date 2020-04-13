@@ -5,6 +5,7 @@
 
 from string import punctuation
 from colored import bg, attr
+from os import popen
 import argparse
 import requests
 import json
@@ -97,9 +98,10 @@ def exists(word):
 # generate a dictionary where each key is a list of words that rhyme in the whole poem
 def generate_rhymes_struct(backend):
 
-    # temp
-    loading = 0
-    words_sum = sum(len(line) for line in poem)
+    # for the progress_bar if datamuse is chosen
+    if backend == "datamuse":
+        loading = 0
+        words_sum = sum(len(line) for line in poem)
 
     count = 0
     for test_line in poem:
@@ -117,12 +119,11 @@ def generate_rhymes_struct(backend):
                 continue
             else:
                 if backend == "datamuse":
-
-                    # temp
-                    loading += 1
-                    print(loading, "/", words_sum)
-
                     rhyming_words = datamuse_rhymes(test_word)
+
+                    loading += 1
+                    progress_bar(loading, words_sum)
+
                 elif backend == "pronouncing":
                     rhyming_words = rhymes(test_word)
                 else:
@@ -203,7 +204,7 @@ def colorize_index(index):
 
     colors = [1, 2, 3, 4, 237, 5, 6, 17, 22, 49, 54, 87, 52, 131, 213, 242, 208, 200, 20, 94]
 
-    while index > len(colors):
+    while index >= len(colors):
         index -= len(colors)
 
     return colors[index]
@@ -229,5 +230,35 @@ def datamuse_rhymes(word):
         rhymes_list.append(entry["word"])
 
     return rhymes_list
+
+def progress_bar(passed, total):
+    
+    fill_char = "#"
+    empty_char = "-"
+    end_chars = ("[", "]")
+    message = "fetching rhymes..."
+
+    term_width = int( popen("tput cols", "r").read() )
+
+    fill = int( (passed/total)*term_width )
+
+    # so that it doesn't overwrite the terminal prompt the first time
+    if passed == 1:
+        print("\n")
+
+    # overwrite the previously written 2 lines
+    print("\033[F \033[F", end='')
+
+    print(message, end='')
+    for i in range(term_width - len(message) - len(str(passed)+" / "+str(total))):
+        print(" ", end='')
+    print(passed, "/", total)
+
+    print(end_chars[0], end='')
+    for i in range(fill):
+        print(fill_char, end='')
+    for i in range((term_width - fill) - 2):
+        print(empty_char, end='')
+    print(end_chars[1]) #, end='\r')
 
 main()
