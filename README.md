@@ -19,6 +19,10 @@ backends:
                         use datamuse as the backend for fetching rhymes. 0: match perfect rhymes. 1: match approximate rhymes. 2: match both
 ```
 
+**Example:**
+![example usage](example.png)
+Poem by [voodooattack](https://github.com/voodooattack).
+
 **Dependencies:**
 * [requests](https://pypi.org/project/requests/)
 * [pronouncing](https://pypi.org/project/pronouncing/) (optional)
