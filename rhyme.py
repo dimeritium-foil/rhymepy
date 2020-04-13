@@ -9,6 +9,7 @@ from os import popen
 import argparse
 import requests
 import json
+import time
 
 # import the pronouncing library if it exists
 try:
@@ -57,9 +58,15 @@ def main():
     else:
         backend = "datamuse"
 
+    start_time = time.time()
     generate_rhymes_struct(backend)
+    elapsed_time = time.strftime("%Mm %Ss", time.gmtime(time.time() - start_time))
 
     match_rhyming_words(lines_to_match)
+
+    # print elapsed time if using datamuse
+    if backend == "datamuse":
+        print("elapsed time:", elapsed_time)
 
     # print the poem after colorizing the matches
     print("")
