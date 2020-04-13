@@ -28,6 +28,7 @@ backends:
 * Make an install script.
 * ~~Add a color palette.~~
 * Add an option to match only last words in each line (rhyme scheme).
+* Option to match each stanza.
 * Remove dependency on the `colored` module.
 * ~~Loading bar if using Datamuse as a backend.~~
 * ~~Center output text.~~
