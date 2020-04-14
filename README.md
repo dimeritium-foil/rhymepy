@@ -31,12 +31,14 @@ Poem by [voodooattack](https://github.com/voodooattack).
 * [colored](https://pypi.org/project/colored/) (temporary)
 
 **TODO:**
-* Make an install script.
-* ~~Add a color palette.~~
-* Add an option to match only last words in each line (rhyme scheme).
+* Rewrite the part that matches lines to skip over empty lines.
 * Option to match each stanza.
+* Make a config file for defaults and color palette.
+* Make an install script.
+* Add an option to match only last words in each line (rhyme scheme).
 * Remove dependency on the `colored` module.
-* ~~Loading bar if using Datamuse as a backend.~~
-* ~~Center output text.~~
 * If a word contains punctuation highlight only the word.
 * (?) Remove empty lines and add a spacer in-between each line match block.
+* ~~Add a color palette.~~
+* ~~Loading bar if using Datamuse as a backend.~~
+* ~~Center output text.~~
