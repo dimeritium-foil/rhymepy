@@ -24,8 +24,6 @@ def main():
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
-    parser._positionals.title = "required arguments"
-
     parse_arguments(parser)
     args = parser.parse_args()
 
@@ -47,30 +45,13 @@ def main():
     global datamuse_option
     datamuse_option = 0
 
-    # apply the chosen backend and default to pronouncing if it exists
-    if pronouncing_exists and args.pronouncing:
-        backend = "pronouncing"
-    elif not pronouncing_exists and args.pronouncing:
-        print("error: pronouncing isn't installed, you can install it by running 'pip install pronouncing'")
-        exit()
-    elif args.datamuse is not None:
-        backend = "datamuse"
-        datamuse_option = args.datamuse
-    elif pronouncing_exists:
-        backend = "pronouncing"
-    else:
-        backend = "datamuse"
+    backend = choose_backend(args)
 
-    start_time = time.time()
     generate_rhymes_struct(backend)
-    elapsed_time = time.strftime("%Mm %Ss", time.gmtime(time.time() - start_time))
 
     match_rhyming_words(lines_to_match)
 
-    # print elapsed time if using datamuse
-    if backend == "datamuse":
-        print("elapsed time:", elapsed_time)
-
+    # print the final result
     term_width = int( popen("tput cols", "r").read() )
     print("")
     for i in range(len(poem)):
@@ -83,7 +64,7 @@ def main():
 
 def parse_arguments(parser):
 
-    parser.add_argument("file", help="a txt file")
+    parser.add_argument("file", help="path to a txt file")
 
     lines_group = parser.add_mutually_exclusive_group()
     lines_group.add_argument("-l", "--lines", type=int, default=2, 
@@ -100,6 +81,23 @@ def parse_arguments(parser):
                              0: match perfect rhymes. 1: match approximate rhymes. 2: match both"""
                         )
 
+    parser._positionals.title = "required arguments"
+
+def choose_backend(args):
+
+    # apply the chosen backend and default to pronouncing if it exists
+    if pronouncing_exists and args.pronouncing:
+        return "pronouncing"
+    elif not pronouncing_exists and args.pronouncing:
+        print("error: pronouncing isn't installed, you can install it by running 'pip install pronouncing'")
+        exit()
+    elif args.datamuse is not None:
+        return "datamuse"
+        datamuse_option = args.datamuse
+    elif pronouncing_exists:
+        return "pronouncing"
+    else:
+        return "datamuse"
 
 # looks for a word in the rhymes_struct, and returns the key if it exists
 def exists(word):
@@ -118,6 +116,7 @@ def generate_rhymes_struct(backend):
     if backend == "datamuse":
         loading = 0
         words_sum = sum(len(line) for line in poem)
+        start_time = time.time()
 
     count = 0
     for test_line in poem:
@@ -173,8 +172,14 @@ def generate_rhymes_struct(backend):
                             rhymes_struct[count].append(test_word)
                             rhymes_struct[count].append(word)
 
+
+    if backend == "datamuse":
+        elapsed_time = time.strftime("%Mm %Ss", time.gmtime(time.time() - start_time))
+        print("elapsed time:", elapsed_time)
+
 # find rhyming words for each block of lines, and match them together via colorizing
 def match_rhyming_words(lines):
+
 
     color_index = 0
 
