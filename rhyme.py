@@ -182,7 +182,6 @@ def match_rhyming_words(lines):
 
     color_index = 0
     count = 0
-    empty_lines = 0
     lines_block = []
 
     for i in range(len(poem)):
@@ -191,7 +190,6 @@ def match_rhyming_words(lines):
             lines_block += poem[i]
             count += 1
         else:
-            empty_lines += 1
             continue
 
         if count == lines or i == len(poem) - 1:
