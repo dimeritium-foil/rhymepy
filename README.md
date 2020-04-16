@@ -31,7 +31,6 @@ Poem by [voodooattack](https://github.com/voodooattack).
 * [colored](https://pypi.org/project/colored/) (temporary)
 
 **TODO:**
-* Rewrite the part that matches lines to skip over empty lines.
 * Option to match each stanza.
 * Make a config file for defaults and color palette.
 * Make an install script.
@@ -39,6 +38,7 @@ Poem by [voodooattack](https://github.com/voodooattack).
 * Remove dependency on the `colored` module.
 * If a word contains punctuation highlight only the word.
 * (?) Remove empty lines and add a spacer in-between each line match block.
+* ~~Rewrite the part that matches lines to skip over empty lines.~~
 * ~~Add a color palette.~~
 * ~~Loading bar if using Datamuse as a backend.~~
 * ~~Center output text.~~
