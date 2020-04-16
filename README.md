@@ -20,8 +20,9 @@ backends:
 ```
 
 **Example:**
-
-![example usage](example.png)
+<p align="center">
+  <img src=https://raw.githubusercontent.com/dimeritium-foil/rhymepy/master/example.png />
+</p>
 
 Poem by [voodooattack](https://github.com/voodooattack).
 
