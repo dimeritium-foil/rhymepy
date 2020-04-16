@@ -316,7 +316,7 @@ def progress_bar(passed, total):
 
     # print the message
     print(message, end='')
-    print(" " * (term_width - len(message) - len(message_counter)), end='')
+    print(" " * (term_width+2 - len(message) - len(message_counter)), end='')
     print(message_counter)
 
     # print the progress bar
