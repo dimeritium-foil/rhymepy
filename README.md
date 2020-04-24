@@ -21,7 +21,7 @@ backends:
 
 **Example:**
 <p align="center">
-  <img src=https://raw.githubusercontent.com/dimeritium-foil/rhymepy/master/example.png />
+  <img src=example.png />
 </p>
 
 Poem by [voodooattack](https://github.com/voodooattack).
