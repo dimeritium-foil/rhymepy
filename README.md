@@ -12,6 +12,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -l N, --lines N       number of lines to match rhymes (default: 2)
   -a, --all-lines       match all lines
+  -s, --stanzas         match each stanza  
 
 backends:
   -p, --pronouncing     use pronouncing as the backend for fetching rhymes
@@ -25,6 +26,13 @@ backends:
 </p>
 
 Poem by [voodooattack](https://github.com/voodooattack).
+
+**Installation:**
+```
+$ git clone https://github.com/dimeritium-foil/rhymepy
+$ cd rhymepy
+$ python setup.py install
+```
 
 **Dependencies:**
 * [requests](https://pypi.org/project/requests/)
