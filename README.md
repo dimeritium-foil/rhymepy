@@ -21,7 +21,7 @@ backends:
 
 **Example:**
 <p align="center">
-  <img src=https://raw.githubusercontent.com/dimeritium-foil/rhymepy/master/example.png />
+  <img src=example.png />
 </p>
 
 Poem by [voodooattack](https://github.com/voodooattack).
@@ -29,15 +29,15 @@ Poem by [voodooattack](https://github.com/voodooattack).
 **Dependencies:**
 * [requests](https://pypi.org/project/requests/)
 * [pronouncing](https://pypi.org/project/pronouncing/) (optional)
-* [colored](https://pypi.org/project/colored/) (temporary)
+* [colored](https://pypi.org/project/colored/)
 
 **TODO:**
-* Make a config file for defaults and color palette.
-* Make an install script.
 * Add an option to match only last words in each line (rhyme scheme).
 * Remove dependency on the `colored` module.
 * If a word contains punctuation highlight only the word.
 * (?) Remove empty lines and add a spacer in-between each line match block.
+* ~~Make a config file for defaults and color palette.~~
+* ~~Make an install script.~~
 * ~~Option to match each stanza.~~
 * ~~Rewrite the part that matches lines to skip over empty lines.~~
 * ~~Add a color palette.~~

@@ -6,7 +6,6 @@
 from string import punctuation
 from colored import bg, attr
 from os import popen
-import argparse
 import requests
 import json
 import time
@@ -19,14 +18,19 @@ try:
 except:
     pronouncing_exists = False
 
+from rhymepy.parse import parse_config, parse_arguments
+
 rhymes_struct = {}
+defaults = {}
 
 def main():
 
+    # parse the config file first to set the defaults
+    global defaults
+    defaults = parse_config()
+
     # parse command line arguments
-    parser = argparse.ArgumentParser()
-    parse_arguments(parser)
-    args = parser.parse_args()
+    args = parse_arguments()
 
     # read the input file
     file = open(args.file, "r")
@@ -35,28 +39,16 @@ def main():
 
     # generate a list of lines, where each line is a list of words, from the input file
     global poem
-    poem = [word.split() for word in input_file]
-
-
-    # default value for datamuse rhyme matching. global so that it can be seen by the datamuse function
-    global datamuse_option
-    datamuse_option = 0
+    poem = [line.split() for line in input_file]
 
     backend = choose_backend(args)
     generate_rhymes_struct(backend)
+    match_rhyming_words(args)
 
-    if args.all_lines:
-        match_rhyming_words(len(poem))
+    print_result(input_file)
 
-    elif args.stanzas:
-        match_stanzas()
-
-    elif args.lines <= 0:
-        print("error: invalid number of lines")
-        exit()
-
-    else:
-        match_rhyming_words(args.lines)
+# takes the input file as an arg for the comparison
+def print_result(input_file):
 
     # print the final result
     term_width = int( popen("tput cols", "r").read() )
@@ -69,56 +61,45 @@ def main():
 
         print(' '.join(poem[i]))
 
-def parse_arguments(parser):
-
-    parser.add_argument("file", help="path to a txt file")
-
-    lines_group = parser.add_mutually_exclusive_group()
-    lines_group.add_argument("-l", "--lines", type=int, default=2, 
-                            help="number of lines to match rhymes (default: 2)", metavar="N")
-    lines_group.add_argument("-a", "--all-lines", action="store_true", help="match all lines")
-    lines_group.add_argument("-s", "--stanzas", action="store_true", help="match each stanza")
-
-    x_backend_group = parser.add_argument_group("backends")
-    backend_group = x_backend_group.add_mutually_exclusive_group()
-    backend_group.add_argument("-p", "--pronouncing", action="store_true",
-                       help="use pronouncing as the backend for fetching rhymes")
-
-    backend_group.add_argument("-d", "--datamuse", type=int, choices=[0, 1, 2],
-                        help="""use datamuse as the backend for fetching rhymes.
-                             0: match perfect rhymes. 1: match approximate rhymes. 2: match both"""
-                        )
-
-    parser._positionals.title = "required arguments"
-
 def choose_backend(args):
 
-    # apply the chosen backend and default to pronouncing if it exists
-    if pronouncing_exists and args.pronouncing:
-        return "pronouncing"
-    elif not pronouncing_exists and args.pronouncing:
-        print("error: pronouncing isn't installed, you can install it by running 'pip install pronouncing'")
-        exit()
-    elif args.datamuse is not None:
-        return "datamuse"
-        datamuse_option = args.datamuse
-    elif pronouncing_exists:
-        return "pronouncing"
+    # so that it can be seen by the datamuse_rhymes function
+    global datamuse_option
+
+    # if no arguments specified, fallback to the defaults
+    if args.pronouncing is False and args.datamuse is None:
+
+        if defaults["backend"] == "pronouncing":
+            if pronouncing_exists:
+                return "pronouncing"
+            else:
+                print("error: pronouncing isn't installed, you can install it by running 'pip install pronouncing'")
+                exit()
+        else:
+            datamuse_option = defaults["datamuse_option"]
+            return "datamuse"
+
+    if args.pronouncing:
+        if pronouncing_exists:
+            return "pronouncing"
+        else:
+            print("error: pronouncing isn't installed, you can install it by running 'pip install pronouncing'")
+            exit()
     else:
+        datamuse_option = args.datamuse
         return "datamuse"
-
-# looks for a word in the rhymes_struct, and returns the key if it exists
-def exists(word):
-
-    for key in rhymes_struct:
-        if word in rhymes_struct[key]:
-            return {"state": True, "key": key}
-
-    return {"state": False}
-
 
 # generate a dictionary where each key is a list of words that rhyme in the whole poem
 def generate_rhymes_struct(backend):
+
+    # looks for a word in the rhymes_struct, and returns the key if it exists
+    def exists(word):
+
+        for key in rhymes_struct:
+            if word in rhymes_struct[key]:
+                return {"state": True, "key": key}
+
+        return {"state": False}
 
     # for the progress_bar if datamuse is chosen
     if backend == "datamuse":
@@ -185,8 +166,31 @@ def generate_rhymes_struct(backend):
         elapsed_time = time.strftime("%Mm %Ss", time.gmtime(time.time() - start_time))
         print("elapsed time:", elapsed_time)
 
+def match_rhyming_words(args):
+
+    # if no arguments specified, fallback to the defaults
+    if args.all_lines is False and args.stanzas is False and args.lines is None:
+
+        if defaults["match"] == "all":
+            match_lines(len(poem))
+        elif defaults["match"]  == "stanzas":
+            match_stanzas()
+        elif defaults["match"]  == "lines":
+            match_lines(defaults["match_lines"])
+        return
+
+    if args.all_lines:
+        match_lines(len(poem))
+    elif args.stanzas:
+        match_stanzas()
+    elif args.lines <= 0:
+        print("error: invalid number of lines")
+        exit()
+    else:
+        match_lines(args.lines)
+
 # find rhyming words for each block of lines, and match them together via colorizing
-def match_rhyming_words(lines):
+def match_lines(lines):
 
     color_index = 0
     count = 0
@@ -253,7 +257,7 @@ def match_stanzas():
     # remove the added empty line
     del poem[len(poem) - 1]
 
-# color the matching words generated by match_rhyming_words with the same color
+# color the matching words generated by the matching function with the same color
 def colorize_words(matching_words_list, line_start, line_end, color_index):
 
     for i in range(line_start, line_end):
@@ -265,7 +269,7 @@ def colorize_words(matching_words_list, line_start, line_end, color_index):
 # return color number from the color palette, with cycling
 def colorize_index(index):
 
-    colors = [1, 2, 3, 4, 237, 5, 6, 17, 22, 49, 54, 87, 52, 131, 213, 242, 208, 200, 20, 94]
+    colors = defaults["colors"]
 
     while index >= len(colors):
         index -= len(colors)
@@ -330,4 +334,5 @@ def show_cursor():
     print("\033[?25h", end='')
 atexit.register(show_cursor)
 
-main()
+if __name__ == "__main__":
+    main()
