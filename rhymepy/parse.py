@@ -1,3 +1,5 @@
+# for parsing the command-line arguments and the config file
+
 from pathlib import Path
 from shutil import copyfile
 import configparser
@@ -10,14 +12,34 @@ def parse_arguments():
     parser.add_argument("file", help="path to a txt file")
 
     lines_group = parser.add_mutually_exclusive_group()
-    lines_group.add_argument("-l", "--lines", type=int, help="number of lines to match rhymes (default: 2)", metavar="N")
-    lines_group.add_argument("-a", "--all-lines", action="store_true", help="match all lines")
-    lines_group.add_argument("-s", "--stanzas", action="store_true", help="match each stanza")
+
+    lines_group.add_argument(
+                            "-l", "--lines",
+                            type=int,
+                            metavar="N",
+                            help="number of lines to match rhymes"
+                            )
+    lines_group.add_argument("-a", "--all-lines",
+                            action="store_true",
+                            help="match all lines"
+                            )
+    lines_group.add_argument("-s", "--stanzas",
+                            action="store_true",
+                            help="match each stanza"
+                            )
 
     x_backend_group = parser.add_argument_group("backends")
     backend_group = x_backend_group.add_mutually_exclusive_group()
-    backend_group.add_argument("-p", "--pronouncing", action="store_true", help="use pronouncing as the backend for fetching rhymes")
-    backend_group.add_argument("-d", "--datamuse", type=int, choices=[0, 1, 2], help="use datamuse as the backend for fetching rhymes.0: match perfect rhymes. 1: match approximate rhymes. 2: match both")
+
+    backend_group.add_argument("-p", "--pronouncing",
+                              action="store_true",
+                              help="use pronouncing as the backend for fetching rhymes"
+                              )
+    backend_group.add_argument("-d", "--datamuse",
+                              type=int,
+                              choices=[0, 1, 2],
+                              help="use datamuse as the backend for fetching rhymes.0: match perfect rhymes. 1: match approximate rhymes. 2: match both"
+                              )
 
     parser._positionals.title = "required arguments"
 
@@ -29,9 +51,7 @@ def parse_config():
     config_file_path = Path("~/.config/rhymepy/rhymepy.ini").expanduser()
 
     if not config_file_path.exists():
-        print("config file error: config file doesn't exist, copying the default config.")
         create_default_config(config_dir_path, config_file_path)
-        exit()
 
     config = configparser.ConfigParser()
     config.read(config_file_path)
@@ -108,3 +128,5 @@ def create_default_config(dir_path, file_path):
 
     if not Path(file_path).exists():
         copyfile(default_config_path, file_path)
+
+    print("config file not found, coping default config to", file_path)
