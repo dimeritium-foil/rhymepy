@@ -19,11 +19,13 @@ def parse_arguments():
                             metavar="N",
                             help="number of lines to match rhymes"
                             )
-    lines_group.add_argument("-a", "--all-lines",
+    lines_group.add_argument(
+                            "-a", "--all-lines",
                             action="store_true",
                             help="match all lines"
                             )
-    lines_group.add_argument("-s", "--stanzas",
+    lines_group.add_argument(
+                            "-s", "--stanzas",
                             action="store_true",
                             help="match each stanza"
                             )
@@ -31,11 +33,13 @@ def parse_arguments():
     x_backend_group = parser.add_argument_group("backends")
     backend_group = x_backend_group.add_mutually_exclusive_group()
 
-    backend_group.add_argument("-p", "--pronouncing",
+    backend_group.add_argument(
+                              "-p", "--pronouncing",
                               action="store_true",
                               help="use pronouncing as the backend for fetching rhymes"
                               )
-    backend_group.add_argument("-d", "--datamuse",
+    backend_group.add_argument(
+                              "-d", "--datamuse",
                               type=int,
                               choices=[0, 1, 2],
                               help="use datamuse as the backend for fetching rhymes.0: match perfect rhymes. 1: match approximate rhymes. 2: match both"

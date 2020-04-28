@@ -1,6 +1,7 @@
 # for fetching rhymes from an api (datamuse)
 
-from os import popen
+from os import popen, listdir
+from pathlib import Path
 import requests
 import json
 
@@ -10,14 +11,53 @@ def datamuse_rhymes(word, datamuse_option):
     url = "https://api.datamuse.com/words?"
 
     if datamuse_option == 0:
-        datamuse_response = requests.get(url + "rel_rhy=" + word).json()
-    elif datamuse_option == 1:
-        datamuse_response = requests.get(url + "rel_nry=" + word).json()
-    else:
-        perfect_rhymes = requests.get(url + "rel_rhy=" + word).json()
-        approximate_rhymes = requests.get(url + "rel_nry=" + word).json()
+        
+        cache = word_cache_exists(word, "datamuse", "rhy")
 
-        datamuse_response = perfect_rhymes + approximate_rhymes
+        if cache["state"]:
+            datamuse_response = cache["response"]
+        else:
+            datamuse_response = requests.get(url + "rel_rhy=" + word).json()
+            cache_word(word, datamuse_response, "datamuse", "rhy")
+
+    elif datamuse_option == 1:
+
+        cache = word_cache_exists(word, "datamuse", "nry")
+
+        if cache["state"]:
+            datamuse_response = cache["response"]
+        else:
+            datamuse_response = requests.get(url + "rel_nry=" + word).json()
+            cache_word(word, datamuse_response, "datamuse", "nry")
+
+    else:
+
+        cache_rhy = word_cache_exists(word, "datamuse", "rhy")
+        cache_nry = word_cache_exists(word, "datamuse", "nry")
+
+        if cache_rhy["state"] and cache_nry["state"]:
+            datamuse_response = cache_rhy["response"] + cache_nry["response"]
+
+        elif cache_rhy["state"]:
+            approximate_rhymes = requests.get(url + "rel_nry=" + word).json()
+            datamuse_response = cache_rhy["response"] + approximate_rhymes
+
+            cache_word(word, approximate_rhymes, "datamuse", "nry")
+
+        elif cache_nry["state"]:
+            perfect_rhymes = requests.get(url + "rel_rhy=" + word).json()
+            datamuse_response = cache_nry["response"] + perfect_rhymes
+
+            cache_word(word, perfect_rhymes, "datamuse", "rhy")
+        
+        else:
+            perfect_rhymes = requests.get(url + "rel_rhy=" + word).json()
+            approximate_rhymes = requests.get(url + "rel_nry=" + word).json()
+
+            datamuse_response = perfect_rhymes + approximate_rhymes
+
+            cache_word(word, perfect_rhymes, "datamuse", "rhy")
+            cache_word(word, approximate_rhymes, "datamuse", "nry")
 
     rhymes_list = []
 
@@ -25,6 +65,45 @@ def datamuse_rhymes(word, datamuse_option):
         rhymes_list.append(entry["word"])
 
     return rhymes_list
+
+def cache_word(word, api_response, api_name, extra_api_info):
+
+    cache_dir = Path("~/.cache/rhymepy/" + api_name).expanduser()
+
+    if not cache_dir.exists():
+        cache_dir.mkdir(parents=True)
+
+    if extra_api_info is None:
+        extra_api_info = ""
+
+    word_file = open(str(cache_dir) + "/" + extra_api_info + "_" + word + ".json", "w")
+    word_file.write(str(api_response))
+    word_file.close()
+
+def word_cache_exists(word, api_name, extra_api_info):
+
+    cache_dir = Path("~/.cache/rhymepy/" + api_name).expanduser()
+
+    if not cache_dir.exists():
+        cache_dir.mkdir(parents=True)
+
+    if extra_api_info is None:
+        extra_api_info = ""
+
+    cached_words = [word.replace(".json", "") for word in listdir(cache_dir)]
+
+    search_word = extra_api_info + "_" + word
+
+    if search_word in cached_words:
+        
+        word_file = open(str(cache_dir) + "/" + extra_api_info + "_" + word + ".json", "r")
+        response = word_file.read()
+        word_file.close()
+
+        return {"state": True, "response": json.loads(response.replace("\'", "\""))}
+
+    else:
+        return {"state": False}
 
 def progress_bar(passed, total):
     
