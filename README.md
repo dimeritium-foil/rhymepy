@@ -44,10 +44,3 @@ $ python setup.py install
 * Remove dependency on the `colored` module.
 * If a word contains punctuation highlight only the word.
 * (?) Remove empty lines and add a spacer in-between each line match block.
-* ~~Make a config file for defaults and color palette.~~
-* ~~Make an install script.~~
-* ~~Option to match each stanza.~~
-* ~~Rewrite the part that matches lines to skip over empty lines.~~
-* ~~Add a color palette.~~
-* ~~Loading bar if using Datamuse as a backend.~~
-* ~~Center output text.~~
