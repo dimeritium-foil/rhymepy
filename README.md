@@ -40,7 +40,7 @@ $ python setup.py install
 * [colored](https://pypi.org/project/colored/)
 
 **TODO:**
-* Add an option to match only last words in each line (rhyme scheme).
 * Remove dependency on the `colored` module.
+* Handle errors when reading from cache files.
+* Add an option to match only last words in each line (rhyme scheme).
 * If a word contains punctuation highlight only the word.
-* (?) Remove empty lines and add a spacer in-between each line match block.

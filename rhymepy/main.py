@@ -3,7 +3,8 @@
 
 from string import punctuation
 from colored import bg, attr
-from os import popen
+from os import popen, getenv
+from shutil import rmtree
 import time
 import atexit
 
@@ -29,8 +30,21 @@ def main():
     # parse command line arguments
     args = parse_arguments()
 
+    if args.clear_cache:
+        rmtree(getenv("HOME") + "/.cache/rhymepy", ignore_errors=True)
+        print("clearing cache")
+        exit()
+
     # read the input file
-    file = open(args.file, "r")
+    try:
+        file = open(args.file, "r")
+    except TypeError:
+        print("error: no file specified")
+        exit()
+    except FileNotFoundError:
+        print("error: file not found")
+        exit()
+
     input_file = file.read().splitlines()
     file.close()
 

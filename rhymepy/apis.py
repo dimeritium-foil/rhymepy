@@ -1,4 +1,5 @@
-# for fetching rhymes from an api (datamuse)
+# for fetching rhymes from an api, and caching the response
+# also provides a progress bar
 
 from os import popen, listdir
 from pathlib import Path
@@ -75,9 +76,11 @@ def cache_word(word, api_response, api_name, extra_api_info):
 
     if extra_api_info is None:
         extra_api_info = ""
+    else:
+        extra_api_info += "_"
 
-    word_file = open(str(cache_dir) + "/" + extra_api_info + "_" + word + ".json", "w")
-    word_file.write(str(api_response))
+    word_file = open(str(cache_dir) + "/" + extra_api_info + word + ".json", "w")
+    word_file.write(json.dumps(api_response))
     word_file.close()
 
 def word_cache_exists(word, api_name, extra_api_info):
@@ -89,19 +92,20 @@ def word_cache_exists(word, api_name, extra_api_info):
 
     if extra_api_info is None:
         extra_api_info = ""
+    else:
+        extra_api_info += "_"
 
     cached_words = [word.replace(".json", "") for word in listdir(cache_dir)]
 
-    search_word = extra_api_info + "_" + word
+    search_word = extra_api_info + word
 
     if search_word in cached_words:
         
-        word_file = open(str(cache_dir) + "/" + extra_api_info + "_" + word + ".json", "r")
+        word_file = open(str(cache_dir) + "/" + extra_api_info + word + ".json", "r")
         response = word_file.read()
         word_file.close()
 
-        return {"state": True, "response": json.loads(response.replace("\'", "\""))}
-
+        return {"state": True, "response": json.loads(response)}
     else:
         return {"state": False}
 

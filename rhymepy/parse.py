@@ -9,7 +9,7 @@ def parse_arguments():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("file", help="path to a txt file")
+    parser.add_argument("file", help="path to a txt file", nargs="?")
 
     lines_group = parser.add_mutually_exclusive_group()
 
@@ -29,6 +29,12 @@ def parse_arguments():
                             action="store_true",
                             help="match each stanza"
                             )
+
+    parser.add_argument(
+                       "--clear-cache",
+                       action="store_true",
+                       help="clear the cache folder and exit"
+                       )
 
     x_backend_group = parser.add_argument_group("backends")
     backend_group = x_backend_group.add_mutually_exclusive_group()
