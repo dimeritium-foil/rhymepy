@@ -1,7 +1,7 @@
 # rhymepy
 A simple CLI program that highlights rhymes in a given text, using either the Datamuse API or the pronouncing module.
 
-**Usage:**
+## Usage
 ```
 usage: rhymepy [-h] [-l N | -a] [-p | -d {0,1,2}] file
 
@@ -20,27 +20,27 @@ backends:
                         use datamuse as the backend for fetching rhymes. 0: match perfect rhymes. 1: match approximate rhymes. 2: match both
 ```
 
-**Example:**
+## Example
 <p align="center">
   <img src=https://raw.githubusercontent.com/dimeritium-foil/rhymepy/master/example.png />
 </p>
 
 Poem by [voodooattack](https://github.com/voodooattack).
 
-**Installation:**
+## Installation
+**Using pip**
+```
+$ pip install rhymepy
+```
+
+**Cloning the repository**
 ```
 $ git clone https://github.com/dimeritium-foil/rhymepy
 $ cd rhymepy
 $ python setup.py install
 ```
 
-**Dependencies:**
+## Dependencies
 * [requests](https://pypi.org/project/requests/)
 * [pronouncing](https://pypi.org/project/pronouncing/) (optional)
 * [colored](https://pypi.org/project/colored/)
-
-**TODO:**
-* Remove dependency on the `colored` module.
-* Handle errors when reading from cache files.
-* Add an option to match only last words in each line (rhyme scheme).
-* If a word contains punctuation highlight only the word.
